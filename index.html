@@ -1,0 +1,173 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Q-ADAPT X</title>
+<style>
+:root{--bg:#f3f1fa;--card:#fff;--ink:#17152b;--mut:#6a6786;--line:#e1def0;--acc:#6d4aff;--pink:#ff4fa0;--ok:#119a62;--bad:#d93a40;--warn:#c98a0a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d0b1f;--card:#171433;--ink:#efedff;--mut:#9f9cc2;--line:#2b2750;--acc:#a28bff;--pink:#ff7ab8;--ok:#3ddc97;--bad:#ff6b70;--warn:#f2b441}}
+:root[data-theme="dark"]{--bg:#0d0b1f;--card:#171433;--ink:#efedff;--mut:#9f9cc2;--line:#2b2750;--acc:#a28bff;--pink:#ff7ab8;--ok:#3ddc97;--bad:#ff6b70;--warn:#f2b441}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Avenir Next","Segoe UI",system-ui,sans-serif}
+h1,h2,h3{font-family:Georgia,"Iowan Old Style",serif;margin:0;letter-spacing:-.01em}
+header{padding:28px 20px 8px;max-width:1240px;margin:auto}
+h1{font-size:clamp(30px,5vw,46px)}h1 b{color:var(--pink)}
+header p{margin:6px 0 0;color:var(--mut);max-width:60ch}
+.wrap{max-width:1240px;margin:auto;padding:16px 20px 40px;display:grid;grid-template-columns:320px 1fr;gap:18px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+h3{font-size:17px;margin-bottom:10px}
+.dom{display:grid;gap:8px}
+.dom button{all:unset;cursor:pointer;padding:10px 12px;border:1px solid var(--line);border-radius:10px;display:block}
+.dom button small{display:block;color:var(--mut)}
+.dom button[aria-pressed=true]{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 12%,transparent);box-shadow:inset 3px 0 0 var(--acc)}
+.dom button:focus-visible,#run:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+label{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);margin-top:12px}label b{color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.chk{display:flex;gap:8px;align-items:center;margin-top:14px;color:var(--ink);font-size:14px;justify-content:flex-start}
+details{margin-top:12px;font-size:13px}summary{cursor:pointer;color:var(--mut)}
+#run{all:unset;box-sizing:border-box;width:100%;text-align:center;margin-top:16px;padding:13px;border-radius:10px;background:var(--acc);color:#fff;font-weight:700;cursor:pointer}
+#run:disabled{opacity:.5;cursor:wait}.ghost{all:unset;cursor:pointer;color:var(--mut);font-size:13px;display:block;text-align:center;margin-top:10px;text-decoration:underline}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.st{flex:1;min-width:92px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);color:var(--mut);font-size:13px;transition:.3s}
+.st.done{color:var(--ink);border-color:var(--ok)}.st.done::before{content:"✓ ";color:var(--ok)}
+.st.act{color:#fff;background:var(--acc);border-color:var(--acc)}
+.prob{display:flex;gap:10px 22px;flex-wrap:wrap;color:var(--mut);font-size:14px}.prob b{color:var(--ink)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th{font-weight:600;text-align:left;color:var(--mut);padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:middle}tr.off td{opacity:.5}tr.top td{background:color-mix(in srgb,var(--pink) 9%,transparent)}
+.tw{overflow-x:auto}
+.kind{padding:2px 8px;border-radius:99px;font-size:12px;border:1px solid var(--line)}
+.kind.quantum{color:var(--acc);border-color:var(--acc)}.kind.hybrid{color:var(--pink);border-color:var(--pink)}
+.bar{height:8px;border-radius:5px;background:var(--line);min-width:90px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),var(--pink));transition:width .5s}
+#log{font:13px/1.6 ui-monospace,Menlo,monospace;max-height:210px;overflow:auto}
+#log div{padding:2px 0;border-bottom:1px dashed var(--line)}.ok{color:var(--ok)}.bad{color:var(--bad)}.warn{color:var(--warn)}.mut{color:var(--mut)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:8px 0 14px}
+.kpi{border:1px solid var(--line);border-radius:10px;padding:10px}.kpi small{color:var(--mut);display:block}.kpi b{font-size:22px;font-family:Georgia,serif}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:700px){.two{grid-template-columns:1fr}}
+svg{width:100%;height:auto;display:block}
+.brow{display:grid;grid-template-columns:130px 1fr 90px;gap:10px;align-items:center;margin:9px 0;font-size:13.5px}
+.brow.me{font-weight:700}.note{color:var(--mut);font-size:12.5px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<header><h1>Q-ADAPT <b>X</b></h1><p>Describe the problem. The engine ranks classical, quantum and hybrid strategies, runs the best one, checks the result and switches strategy when quality drops.</p></header>
+<div class="wrap">
+<aside><div class="card"><h3>1. Choose a problem</h3>
+<div class="dom" id="dom">
+<button data-d="chem" aria-pressed="true">Quantum chemistry<small>H₂ ground-state energy</small></button>
+<button data-d="opt" aria-pressed="false">Optimization<small>MaxCut on a random graph</small></button>
+<button data-d="qai" aria-pressed="false">Quantum AI<small>Kernel classification</small></button></div>
+<h3 style="margin-top:20px">2. Set conditions</h3>
+<div id="nrow"><label>Graph nodes <b id="vn"></b></label><input type="range" data-k="n" min="4" max="8" value="6"></div>
+<label>Hardware noise <b id="vnoise"></b></label><input type="range" data-k="noise" min="0" max="0.12" step="0.005" value="0.05">
+<label>Qubit budget <b id="vqb"></b></label><input type="range" data-k="qb" min="0" max="10" value="6">
+<label>Max runs <b id="vruns"></b></label><input type="range" data-k="runs" min="1" max="5" value="4">
+<label>Acceptable quality <b id="vthr"></b></label><input type="range" data-k="thr" min="0.5" max="1" step="0.01" value="0.85">
+<label class="chk"><input type="checkbox" id="qf" checked> Try quantum strategies first</label>
+<details><summary>Scoring weights</summary>
+<label>α quality <b id="w0"></b></label><input type="range" data-w="0" min="0" max="2" step="0.05" value="1">
+<label>β runtime <b id="w1"></b></label><input type="range" data-w="1" min="0" max="2" step="0.05" value="0.25">
+<label>γ resources <b id="w2"></b></label><input type="range" data-w="2" min="0" max="2" step="0.05" value="0.3">
+<label>δ hardware noise <b id="w3"></b></label><input type="range" data-w="3" min="0" max="2" step="0.05" value="0.6"></details>
+<button id="run">Run adaptive engine</button><button class="ghost" id="seed">New random instance</button></div></aside>
+<main>
+<div class="card"><div class="steps" id="steps"></div></div>
+<div class="card"><h3>Problem understanding</h3><div class="prob" id="prob"></div></div>
+<div class="card"><h3>Candidates, ranked by S(a) = αQ − βT − γR − δH</h3><div class="tw"><table><thead><tr><th>#</th><th>Strategy</th><th>Type</th><th>Qubits</th><th>Depth</th><th>Est. quality</th><th>Score</th></tr></thead><tbody id="cand"></tbody></table></div>
+<p class="note">Hard limits (qubit budget) remove candidates before ranking. Scores update as you change conditions.</p></div>
+<div class="card"><h3>Execution and adaptation log</h3><div id="log"><div class="mut">Press “Run adaptive engine” to start.</div></div></div>
+<div class="card" id="res" hidden><h3>Result</h3><div class="kpis" id="kpis"></div>
+<div class="two"><div><div id="viz"></div><p class="note" id="vcap"></p></div><div><h3 style="font-size:15px">Why this strategy</h3><p id="why"></p><h3 style="font-size:15px;margin-top:14px">Compared with fixed strategies</h3><div id="bench"></div></div></div></div>
+<p class="note">Prototype runs entirely in your browser: exact statevector QAOA, parameter-shift VQE on the H₂ two-qubit Hamiltonian, and kernel ridge classification. Noise is a synthetic depolarizing model and runtimes are modelled, not measured on hardware. Next step: Qiskit and IBM Runtime backends.</p>
+</main></div>
+<script>
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms)),pct=x=>Math.round(x*100)+'%';
+const mk=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const gs=r=>Math.sqrt(-2*Math.log(r()+1e-9))*Math.cos(6.2832*r()),hash=s=>[...s].reduce((a,c)=>a*31+c.charCodeAt(0)|0,7);
+const S={dom:'chem',n:6,noise:.05,qb:6,runs:4,thr:.85,qf:true,seed:7,w:[1,.25,.3,.6]};
+const g0=-1.0523732,g1=.3979374,g3=-.0112801,g4=.1809312,EX=-1.857275;
+const ST=['Understand','Candidates','Assess','Execute','Re-evaluate','Explain'];let P,busy=false;
+$('#steps').innerHTML=ST.map((s,i)=>`<div class="st" id="st${i}">${s}</div>`).join('');
+const stage=i=>ST.forEach((_,k)=>$('#st'+k).className='st '+(k<i?'done':k==i?'act':''));
+const log=(m,c='')=>{const d=document.createElement('div');d.className=c;d.textContent=m;$('#log').append(d);$('#log').scrollTop=1e5};
+function gen(){const r=mk(S.seed*977);
+ if(S.dom==='opt'){const n=S.n,E=[];for(let i=0;i<n;i++)E.push([i,(i+1)%n]);
+  for(let i=0;i<n;i++)for(let j=i+2;j<n;j++)if(!(i==0&&j==n-1)&&r()<.35)E.push([i,j]);
+  const C=Array.from({length:1<<n},(_,z)=>E.reduce((s,[a,b])=>s+(((z>>a)&1)!=((z>>b)&1)),0));
+  P={n,E,C,mx:Math.max(...C),desc:[['Domain','Optimization'],['Task','MaxCut'],['Nodes',n],['Edges',E.length],['Goal','Maximise cut value']]}}
+ else if(S.dom==='qai'){const pts=m=>Array.from({length:m},()=>{const x=[r()*Math.PI,r()*Math.PI];let y=(x[0]-1.5708)*(x[1]-1.5708)>0?1:-1;if(r()<.06)y=-y;return{x,y}});
+  P={tr:pts(48),te:pts(40),desc:[['Domain','Quantum AI'],['Task','Binary classification'],['Pattern','XOR-like, 6% label noise'],['Data','48 train / 40 test, 2 features']]}}
+ else P={desc:[['Domain','Quantum chemistry'],['Molecule','H₂ at 0.735 Å'],['Model','Parity-reduced 2-qubit Hamiltonian'],['Goal','Ground-state energy']]};
+ $('#nrow').style.display=S.dom==='opt'?'':'none'}
+const CT={chem:()=>[['VQE','quantum',2,14,.5,.93,1],['ADAPT-VQE','hybrid',2,8,.8,.95,.6],['Classical exact diagonalization','classical',0,0,.1,.99,0]],
+opt:()=>{const d=2*P.E.length+P.n;return[['QAOA (p=1)','quantum',P.n,d,.6,.8,1],['QAOA + local search','hybrid',P.n,d,.9,.95,.7],['Simulated annealing','classical',0,0,.3,.97,0]]},
+qai:()=>[['Quantum kernel','quantum',2,6,.7,.88,1],['Hybrid kernel','hybrid',2,6,.9,.92,.6],['Classical RBF kernel','classical',0,0,.1,.9,0]]};
+const KO={quantum:0,hybrid:1,classical:2};
+function rank(){const L=CT[S.dom]().map(([id,kind,q,d,t,q0,h])=>({id,kind,q,d,t,q0,h})),tm=Math.max(...L.map(c=>c.t));
+ L.forEach(c=>{c.Q=Math.max(0,c.q0-c.h*S.noise*c.d*.05);c.T=c.t/tm;c.R=c.q/S.qb||0;c.H=Math.min(1,c.h*S.noise*c.d/2);
+  c.s=S.w[0]*c.Q-S.w[1]*c.T-S.w[2]*(S.qb?c.R:c.q?9:0)-S.w[3]*c.H;c.bad=c.q>S.qb?`needs ${c.q} qubits, budget is ${S.qb}`:''});
+ L.sort((a,b)=>(!!a.bad-!!b.bad)||(S.qf?KO[a.kind]-KO[b.kind]:0)||b.s-a.s);return L}
+function render(){gen();$('#prob').innerHTML=P.desc.map(([k,v])=>`<span>${k}: <b>${v}</b></span>`).join('');
+ const L=rank(),mn=Math.min(...L.map(c=>c.s)),mxs=Math.max(...L.map(c=>c.s));let first=true;
+ $('#cand').innerHTML=L.map((c,i)=>{const top=!c.bad&&first;if(top)first=false;
+  return`<tr class="${c.bad?'off':top?'top':''}"><td>${c.bad?'–':i+1}</td><td><b>${c.id}</b>${c.bad?`<br><span class="bad">Rejected: ${c.bad}</span>`:top?'<br><span class="mut">Top pick</span>':''}</td><td><span class="kind ${c.kind}">${c.kind}</span></td><td>${c.q}</td><td>${c.d}</td><td>${pct(c.Q)}</td><td><div class="bar"><i style="width:${c.bad?0:8+92*(c.s-mn)/(mxs-mn||1)}%"></i></div></td></tr>`}).join('');
+ ['n','noise','qb','runs','thr'].forEach(k=>$('#v'+k).textContent=k=='thr'?pct(S[k]):S[k]);S.w.forEach((w,i)=>$('#w'+i).textContent=w);stage(2.5)}
+function solve(A,b){const n=b.length;for(let i=0;i<n;i++){let p=i;for(let k=i+1;k<n;k++)if(Math.abs(A[k][i])>Math.abs(A[p][i]))p=k;[A[i],A[p]]=[A[p],A[i]];[b[i],b[p]]=[b[p],b[i]];for(let k=i+1;k<n;k++){const f=A[k][i]/A[i][i];for(let j=i;j<n;j++)A[k][j]-=f*A[i][j];b[k]-=f*b[i]}}
+ const x=Array(n);for(let i=n-1;i>=0;i--){let s=b[i];for(let j=i+1;j<n;j++)s-=A[i][j]*x[j];x[i]=s/A[i][i]}return x}
+function exec(c,nz,mit){const r=mk(S.seed*131+hash(c.id)+Math.round(nz*1e4)),lam=1-Math.exp(-nz*c.d*.08),o={t:c.t*(mit?3:1)};
+ if(S.dom==='chem'){if(c.kind=='classical'){Object.assign(o,{q:1,hist:[EX],note:'exact energy −1.8573 Ha'});return o}
+  let th=1.2;const H=[],ev=t=>{const e=g0-g3-2*g1*Math.cos(t)+g4*Math.sin(t);return e+lam*(g0-e)+.004*gs(r)};
+  for(let i=0;i<28;i++){const g=(ev(th+1.5708)-ev(th-1.5708))/2;th-=.35*g;H.push(ev(th))}
+  const e=H.slice(-5).reduce((a,b)=>a+b)/5,er=Math.abs(e-EX);o.hist=H;o.q=Math.max(0,1-er/.25);o.note=`E = ${e.toFixed(4)} Ha, error ${(er*1000).toFixed(1)} mHa`;return o}
+ if(S.dom==='opt'){const{n,E,C,mx}=P,N=1<<n,cut=z=>C[z];
+  const probs=(g,b)=>{const re=new Float64Array(N).fill(1/Math.sqrt(N)),im=new Float64Array(N);
+   for(let z=0;z<N;z++){const p=-g*C[z],c=Math.cos(p),s=Math.sin(p),a=re[z];re[z]=a*c-im[z]*s;im[z]=a*s+im[z]*c}
+   const cb=Math.cos(b),sb=Math.sin(b);
+   for(let q=0;q<n;q++)for(let i=0;i<N;i++)if(!(i>>q&1)){const j=i|1<<q,ar=re[i],ai=im[i],br=re[j],bi=im[j];re[i]=cb*ar+sb*bi;im[i]=cb*ai-sb*br;re[j]=cb*br+sb*ai;im[j]=cb*bi-sb*ar}
+   return re.map((x,i)=>(1-lam)*(x*x+im[i]*im[i])+lam/N)};
+  const flip=z=>{let imp=true;while(imp){imp=false;for(let i=0;i<n;i++)if(C[z^1<<i]>C[z]){z^=1<<i;imp=true}}return z};
+  if(c.kind=='classical'){let z=Math.floor(r()*N),bz=z,T=2;for(let i=0;i<600;i++){T=2*Math.pow(.025,i/600);const y=z^1<<Math.floor(r()*n);if(C[y]>=C[z]||r()<Math.exp((C[y]-C[z])/T))z=y;if(C[z]>C[bz])bz=z}
+   Object.assign(o,{z:bz,q:C[bz]/mx,note:`cut ${C[bz]} of optimum ${mx}`});return o}
+  let best=-1,bg=0,bb=0,bp;for(let a=1;a<=16;a++)for(let k=1;k<=12;k++){const g=a*Math.PI/16,b=k*Math.PI/24,p=probs(g,b),ex=p.reduce((s,v,z)=>s+v*C[z],0);if(ex>best){best=ex;bg=g;bb=b;bp=p}}
+  if(c.kind=='quantum'){let z=0;bp.forEach((v,i)=>{if(v>bp[z])z=i});Object.assign(o,{z,q:best/mx,note:`γ=${bg.toFixed(2)}, β=${bb.toFixed(2)}, expected cut ${best.toFixed(2)} of ${mx}`});return o}
+  let z=0,bc=-1;for(let s=0;s<64;s++){let u=r(),i=0;while(i<N-1&&u>bp[i]){u-=bp[i];i++}if(C[i]>bc){bc=C[i];z=i}}
+  z=flip(z);Object.assign(o,{z,q:C[z]/mx,note:`best of 64 shots + local search: cut ${C[z]} of ${mx}`});return o}
+ const{tr,te}=P,rbf=(a,b)=>Math.exp(-1.5*((a[0]-b[0])**2+(a[1]-b[1])**2)),qk=(a,b)=>a.reduce((s,x,i)=>s*Math.cos((x-b[i])/2)**2,1),sd=.02+nz*c.d*.15;
+ const nq=(a,b)=>(1-lam)*qk(a,b)+lam*.25+sd*gs(r);
+ const K=c.kind=='classical'?rbf:c.kind=='quantum'?nq:(a,b)=>.5*(nq(a,b)+rbf(a,b));
+ const A=tr.map((p,i)=>tr.map((s,j)=>K(p.x,s.x)+(i==j?.15:0))),al=solve(A,tr.map(p=>p.y));
+ o.pred=te.map(p=>Math.sign(tr.reduce((s,t,i)=>s+al[i]*K(p.x,t.x),0))||1);o.q=te.filter((p,i)=>p.y==o.pred[i]).length/te.length;o.note=`test accuracy ${pct(o.q)}`;return o}
+function viz(c,o){const col=v=>v?'var(--pink)':'var(--acc)';
+ if(S.dom==='chem'){const h=o.hist,mn=EX-.02,mx=Math.max(...h,EX+.1),X=i=>24+i*(312/Math.max(1,h.length-1)),Y=v=>10+(mx-v)/(mx-mn)*130;
+  $('#vcap').textContent='Energy per optimizer step. Dashed line is the exact ground-state energy.';
+  return`<svg viewBox="0 0 360 160"><line x1="24" x2="340" y1="${Y(EX)}" y2="${Y(EX)}" stroke="var(--ok)" stroke-dasharray="5 4"/>${h.length>1?`<polyline fill="none" stroke="var(--acc)" stroke-width="2.5" points="${h.map((v,i)=>X(i)+','+Y(v)).join(' ')}"/>`:`<text x="30" y="${Y(EX)-8}" fill="var(--ok)" font-size="12">exact solution</text>`}<text x="24" y="156" fill="var(--mut)" font-size="11">optimizer step</text></svg>`}
+ if(S.dom==='opt'){const{n,E}=P,pos=i=>[180+62*Math.cos(6.2832*i/n-1.57),80+62*Math.sin(6.2832*i/n-1.57)];
+  $('#vcap').textContent='Pink edges are cut by the chosen partition. Node colour shows which side it is on.';
+  return`<svg viewBox="0 0 360 160">${E.map(([a,b])=>{const cu=((o.z>>a)&1)!=((o.z>>b)&1),[x1,y1]=pos(a),[x2,y2]=pos(b);return`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${cu?'var(--pink)':'var(--line)'}" stroke-width="${cu?3:1.5}"/>`}).join('')}${Array.from({length:n},(_,i)=>{const[x,y]=pos(i);return`<circle cx="${x}" cy="${y}" r="9" fill="${col((o.z>>i)&1)}"/>`}).join('')}</svg>`}
+ $('#vcap').textContent='Test points coloured by true class. Red rings mark misclassified points.';
+ return`<svg viewBox="0 0 360 170">${P.te.map((p,i)=>`<circle cx="${15+p.x[0]/Math.PI*330}" cy="${160-p.x[1]/Math.PI*150}" r="5.5" fill="${col(p.y>0)}" ${o.pred[i]!=p.y?'stroke="var(--bad)" stroke-width="2.5"':''}/>`).join('')}</svg>`}
+async function run(){if(busy)return;busy=true;$('#run').disabled=true;$('#log').innerHTML='';$('#res').hidden=true;
+ const L=rank(),el=L.filter(c=>!c.bad);stage(0);log('Analysing problem: '+P.desc.map(d=>d[1]).join(', '));await sleep(350);
+ stage(1);log('Eligible strategies: '+el.map(c=>c.id).join(' → '),'mut');L.filter(c=>c.bad).forEach(c=>log(`Rejected ${c.id}: ${c.bad}`,'bad'));await sleep(450);
+ stage(2);log(`Resources checked: noise ${S.noise}, qubit budget ${S.qb}, run budget ${S.runs}`,'mut');await sleep(400);
+ let n=0,cost=0,acc=null,best=null,switches=0;
+ const take=(c,o,mit)=>{if(!best||o.q>best.o.q)best={c,o,mit};return o.q>=S.thr};
+ for(const c of el){if(n>=S.runs)break;
+  stage(3);log(`Running ${c.id}…`);await sleep(550);let o=exec(c,S.noise,0);n++;cost+=o.t;
+  let ok=take(c,o,0);log(`${c.id}: quality ${pct(o.q)}, ${o.note}`,ok?'ok':'bad');if(ok){acc=best;break}
+  stage(4);await sleep(450);
+  if(c.kind!='classical'&&n<S.runs){log(`Quality below ${pct(S.thr)}. Re-running with error mitigation (noise ×0.4, 3× shots).`,'warn');await sleep(550);
+   o=exec(c,S.noise*.4,1);n++;cost+=o.t;ok=take(c,o,1);log(`${c.id} + mitigation: quality ${pct(o.q)}, ${o.note}`,ok?'ok':'bad');if(ok){acc=best;break}}
+  if(n<S.runs){switches++;log('Switching to the next strategy.','warn')}}
+ stage(5);await sleep(300);const f=acc||best;log(acc?`Validated: ${f.c.id} meets the ${pct(S.thr)} threshold.`:`No strategy met the threshold. Reporting best result: ${f.c.id}.`,acc?'ok':'bad');
+ const bm=[['Fixed classical',el.find(c=>c.kind=='classical')],['Fixed quantum',el.find(c=>c.kind=='quantum')],['Fixed hybrid',el.find(c=>c.kind=='hybrid')]].map(([l,c])=>c?{l,q:exec(c,S.noise,0).q,t:c.t}:{l,na:1});
+ bm.push({l:'Q-ADAPT X',q:f.o.q,t:cost,me:1});
+ const k=(a,b,c='')=>`<div class="kpi"><small>${a}</small><b class="${c}">${b}</b></div>`;
+ $('#kpis').innerHTML=k('Strategy',f.c.id.length>16?f.c.kind:f.c.id)+k('Quality',pct(f.o.q),acc?'ok':'bad')+k('Runs used',n+' / '+S.runs)+k('Modelled cost',cost.toFixed(1)+' s')+k('Status',acc?'Validated':'Best effort',acc?'ok':'warn');
+ $('#viz').innerHTML=viz(f.c,f.o);
+ $('#why').textContent=`${f.c.id} ${f.mit?'with error mitigation ':''}was chosen after ${n} run${n>1?'s':''} and ${switches} strategy switch${switches==1?'':'es'}. `+
+  (f.c.kind=='classical'?'At this size and noise level a classical method fits best, so no quantum advantage is claimed. ':f.mit?'Noise degraded the first attempt, so mitigation was applied before the result met the threshold. ':'It met the quality threshold on the first attempt. ')+
+  (acc?'Output validated against the domain reference (exact energy, optimal cut or test accuracy).':'The threshold was not reached within the run budget, so the best validated result is reported as a failure case.');
+ $('#bench').innerHTML=bm.map(b=>`<div class="brow ${b.me?'me':''}"><span>${b.l}</span>${b.na?'<span class="note">not available under current limits</span><span></span>':`<div class="bar"><i style="width:${b.q*100}%"></i></div><span>${pct(b.q)} · ${b.t.toFixed(1)} s</span>`}</div>`).join('');
+ $('#res').hidden=false;$('#res').scrollIntoView({behavior:'smooth',block:'start'});busy=false;$('#run').disabled=false}
+document.querySelectorAll('input[data-k]').forEach(i=>i.oninput=()=>{S[i.dataset.k]=+i.value;render()});
+document.querySelectorAll('input[data-w]').forEach(i=>i.oninput=()=>{S.w[+i.dataset.w]=+i.value;render()});
+$('#qf').onchange=e=>{S.qf=e.target.checked;render()};$('#run').onclick=run;$('#seed').onclick=()=>{S.seed=Math.floor(Math.random()*1e4);render()};
+document.querySelectorAll('#dom button').forEach(b=>b.onclick=()=>{S.dom=b.dataset.d;document.querySelectorAll('#dom button').forEach(x=>x.setAttribute('aria-pressed',x===b));$('#res').hidden=true;render()});
+render();
+</script></body></html>
